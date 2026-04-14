@@ -159,6 +159,8 @@ Assets/uLipSync/
 
 ### 変更ファイル
 
+- `Assets/uLipSync/Runtime/Core/Common.cs` — `AudioFilterReadEvent` の型を `UnityEvent<float[], int>` → `UnityEvent<float[], int, int>` に変更（CI-1 対応）
+- `Assets/uLipSync/Runtime/uLipSyncAudioSource.cs` — `onAudioFilterRead.Invoke(data, channels)` 呼び出し箇所に `AudioSettings.outputSampleRate` を第 3 引数として追加（CI-1 対応）
 - `Assets/uLipSync/Runtime/uLipSync.cs` — `OnDataReceived` シグネチャ変更、`ScheduleJob` のサンプルレート補正
 - `Assets/uLipSync/Runtime/uLipSyncMicrophone.cs` — `IAudioInputSource` 実装付与
 - `Assets/uLipSync/Runtime/uLipSyncBakedDataPlayer.cs` — `OnBakeUpdate`（Editor のみ）の `OnDataReceived` 呼び出し書き換え（※後述の呼び出し元分析参照）
@@ -248,7 +250,7 @@ sequenceDiagram
 | 6.5 | NAudio-LICENSE.txt 同梱 | Plugins/ ディレクトリ | — | — |
 | 6.6 | Mono 専用・IL2CPP 非対応の明記 | README | — | — |
 | 7.1 | 旧シグネチャ削除・新シグネチャのみ | uLipSync | `OnDataReceived(float[], int, int)` | — |
-| 7.2 | OnAudioFilterRead の書き換え | uLipSync | AudioSettings.outputSampleRate を渡す | — |
+| 7.2 | OnAudioFilterRead の書き換え（AudioFilterReadEvent 型変更含む） | uLipSync + uLipSyncAudioSource + Common.cs | AudioSettings.outputSampleRate を渡す / AudioFilterReadEvent 型変更 | CI-1 対応: OK（「AudioFilterReadEvent 連鎖変更」参照） |
 | 7.3 | uLipSyncBakedDataPlayer 書き換え | uLipSyncBakedDataPlayer | OnBakeUpdate | — |
 | 7.4 | uLipSyncCalibrationAudioPlayer 書き換え | uLipSyncCalibrationAudioPlayer | 後述参照 | — |
 | 7.5 | ScheduleJob でサンプルレート使用 | uLipSync | _cachedSampleRate | — |
@@ -492,6 +494,33 @@ ASIO コールバック → OnDataReceived(samples, ch, asioSampleRate)
     → LipSyncJob.Execute() → DownSample(buffer, data, outputSampleRate, targetSampleRate)
 ```
 
+#### AudioFilterReadEvent 連鎖変更 (CI-1 対応)
+
+`uLipSync.OnDataReceived` のシグネチャを `(float[], int, int)` に変更すると、`uLipSyncAudioSource` 経由で `AddListener(OnDataReceived)` を呼ぶ既存パスとの型不一致が生じる。これを解消するため `AudioFilterReadEvent` の型定義自体も変更する。
+
+**現状の定義**（`Assets/uLipSync/Runtime/Core/Common.cs` 行 30 付近）:
+```csharp
+[System.Serializable]
+public class AudioFilterReadEvent : UnityEvent<float[], int> { }
+```
+
+**新定義**（CI-1 対応後）:
+```csharp
+[System.Serializable]
+public class AudioFilterReadEvent : UnityEvent<float[], int, int> { }
+// 第 3 引数 int は sampleRate（出力サンプルレート、単位: Hz）を表す
+```
+
+**影響する呼び出し元の変更**:
+- `uLipSyncAudioSource.OnAudioFilterRead` 内の `Invoke` 呼び出しを以下のように変更する:
+  ```csharp
+  // 変更前
+  onAudioFilterRead.Invoke(input, channels);
+  // 変更後
+  onAudioFilterRead.Invoke(input, channels, AudioSettings.outputSampleRate);
+  ```
+- `uLipSync` 側の `audioSourceProxy.onAudioFilterRead.AddListener(OnDataReceived)` は、`OnDataReceived` のシグネチャが `(float[], int, int)` になることで `UnityEvent<float[], int, int>` の型と一致するため、**変更不要**となる。
+
 **Dependencies**
 - Inbound: `uLipSyncAsioInput`、`uLipSyncMicrophone`（経由: AudioSource/OnAudioFilterRead）(P0)
 - Outbound: `LipSyncJob`（Burst）(P0)
@@ -712,6 +741,28 @@ Assets/uLipSync/Plugins/
 3. **ロック順序**: ASIO コールバックから `uLipSync.OnDataReceived` を呼ぶと、その内部で `lock(_lockObject)` が取得される。`uLipSync.ScheduleJob()` も `lock(_lockObject)` を取得する。**同一ロックオブジェクトの再帰取得は発生しない**（`OnDataReceived` と `ScheduleJob` は同じスレッドで同時実行されないため）
 4. **バッファ再利用不変条件**: `_preAllocBuffer` は `OnAsioAudioAvailable` のみが書き込む。`OnDataReceived` がこのバッファを `lock` 内でコピーするため、バッファの再利用は安全である
 5. **コールバックスレッドからの `lock` 取得**: ASIO コールバック内で `uLipSync.OnDataReceived` を呼ぶことで `_lockObject` を取得する。メインスレッドが `ScheduleJob` で `_lockObject` を保持している間はコールバックがブロックされる。この待機時間は ASIO バッファサイズ（典型的に 64〜512 サンプル ≒ 1〜10 ms）以内に収まらなければならない。`ScheduleJob` はジョブスケジュールのみ行い、重い処理は Burst ジョブに委ねるため、ロック保持時間は十分短い
+6. **`_cachedSampleRate` の読み書き規則 (CI-2 対応)**:
+   - **書き込み**: `uLipSync.OnDataReceived(float[] samples, int channels, int sampleRate)` 内で、`lock(_lockObject)` スコープ内に `_cachedSampleRate = sampleRate;` を含める。バッファのリングコピーと同一のクリティカルセクションで実行することで、ASIO ドライバのサンプルレート変更（ドライバ再初期化時）による中間値の観測を防ぐ。
+   - **読み取り**: `uLipSync.ScheduleJob()` 内で、同一 `_lockObject` のスコープ内で `_cachedSampleRate` を読み取り、`LipSyncJob.outputSampleRate` に渡す。
+   - **根拠**: `int` 型の書き込みは多くの実装で原子的だが、ASIO のサンプルレート変更はドライバ再初期化を伴う非同期イベントであるため、バッファコピーとの整合性を保証する目的で明示的に `_lockObject` で保護する。これにより既存 `_lockObject` の契約（バッファ書き込みと同期）に一貫性を持たせる。
+   - **疑似コード注記**:
+     ```
+     // uLipSync.OnDataReceived（コールバックスレッド）
+     lock (_lockObject)
+     {
+         // バッファコピー処理 ...
+         _cachedSampleRate = sampleRate;  // ← lock スコープ内
+         _isDataReceived = true;
+     }
+
+     // uLipSync.ScheduleJob()（メインスレッド）
+     lock (_lockObject)
+     {
+         int sr = _cachedSampleRate;  // ← lock スコープ内で読み取り
+         // ...
+         new LipSyncJob { outputSampleRate = sr, ... }.Schedule(...);
+     }
+     ```
 
 ### 禁止パターン
 
