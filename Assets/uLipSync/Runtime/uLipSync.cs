@@ -22,6 +22,7 @@ public class uLipSync : MonoBehaviour
     bool _allocated = false;
     int _index = 0;
     bool _isDataReceived = false;
+    int _cachedSampleRate = 0;
 
     NativeArray<float> _rawInputData;
     NativeArray<float> _inputData;
@@ -299,7 +300,7 @@ public class uLipSync : MonoBehaviour
         {
             input = _inputData,
             startIndex = index,
-            outputSampleRate = AudioSettings.outputSampleRate,
+            outputSampleRate = _cachedSampleRate > 0 ? _cachedSampleRate : AudioSettings.outputSampleRate,
             targetSampleRate = profile.targetSampleRate,
             melFilterBankChannels = profile.melFilterBankChannels,
             means = _means,
@@ -361,15 +362,17 @@ public class uLipSync : MonoBehaviour
         _currentAudioSourceProxy = audioSourceProxy;
     }
 
-    public void OnDataReceived(float[] input, int channels)
+    public void OnDataReceived(float[] input, int channels, int sampleRate)
     {
         lock (_lockObject)
         {
             if (!_rawInputData.IsCreated || _rawInputData.Length == 0) return;
-            
+
+            _cachedSampleRate = sampleRate;
+
             int n = _rawInputData.Length;
             _index = _index % n;
-            for (int i = 0; i < input.Length; i += channels) 
+            for (int i = 0; i < input.Length; i += channels)
             {
                 _rawInputData[_index++ % n] = input[i];
             }
@@ -390,8 +393,8 @@ public class uLipSync : MonoBehaviour
     void OnAudioFilterRead(float[] input, int channels)
     {
         if (audioSourceProxy) return;
-        
-        OnDataReceived(input, channels);
+
+        OnDataReceived(input, channels, AudioSettings.outputSampleRate);
     }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -437,7 +440,7 @@ public class uLipSync : MonoBehaviour
         offset += (int)(audioSyncOffsetTime * AudioSettings.outputSampleRate * ch);
         offset = math.min(offset, clip.samples - n - 2);
         clip.GetData(_audioBuffer, offset);
-        OnDataReceived(_audioBuffer, ch);
+        OnDataReceived(_audioBuffer, ch, AudioSettings.outputSampleRate);
 
         _isWebGLProcessed = true;
     }
@@ -457,7 +460,7 @@ public class uLipSync : MonoBehaviour
 
     public void OnBakeUpdate(float[] input, int channels)
     {
-        OnDataReceived(input, channels);
+        OnDataReceived(input, channels, AudioSettings.outputSampleRate);
         UpdateBuffers();
         UpdatePhonemes();
         ScheduleJob();
