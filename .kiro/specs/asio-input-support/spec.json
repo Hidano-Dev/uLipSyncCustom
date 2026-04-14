@@ -1,22 +1,22 @@
 {
   "feature_name": "asio-input-support",
   "created_at": "2026-04-14T12:02:47Z",
-  "updated_at": "2026-04-14T13:00:00Z",
+  "updated_at": "2026-04-14T13:15:00Z",
   "language": "ja",
-  "phase": "design-generated",
+  "phase": "tasks-generated",
   "approvals": {
     "requirements": {
       "generated": true,
-      "approved": false
+      "approved": true
     },
     "design": {
       "generated": true,
-      "approved": false
+      "approved": true
     },
     "tasks": {
-      "generated": false,
-      "approved": false
+      "generated": true,
+      "approved": true
     }
   },
-  "ready_for_implementation": false
+  "ready_for_implementation": true
 }
