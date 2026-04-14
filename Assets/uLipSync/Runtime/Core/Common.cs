@@ -27,7 +27,7 @@ public class LipSyncUpdateEvent : UnityEvent<LipSyncInfo>
 }
 
 [System.Serializable]
-public class AudioFilterReadEvent : UnityEvent<float[], int> 
+public class AudioFilterReadEvent : UnityEvent<float[], int, int>
 {
 }
 
