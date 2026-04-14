@@ -4,7 +4,7 @@ namespace uLipSync
 {
 
 [RequireComponent(typeof(AudioSource))]
-public class uLipSyncMicrophone : MonoBehaviour
+public class uLipSyncMicrophone : MonoBehaviour, IAudioInputSource
 {
 #if !UNITY_WEBGL || UNITY_EDITOR
     const int MaxRetryMilliSec = 1000;
@@ -217,6 +217,10 @@ public class uLipSyncMicrophone : MonoBehaviour
         source.loop = true;
         source.Play();
     }
+#else
+    public bool isRecording => false;
+    public void StartRecord() {}
+    public void StopRecord() {}
 #endif
 }
 
