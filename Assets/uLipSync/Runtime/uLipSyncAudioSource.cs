@@ -12,7 +12,7 @@ public class uLipSyncAudioSource : MonoBehaviour
     {
         if (onAudioFilterRead != null) 
         {
-            onAudioFilterRead.Invoke(input, channels);
+            onAudioFilterRead.Invoke(input, channels, AudioSettings.outputSampleRate);
         }
     }
 }
