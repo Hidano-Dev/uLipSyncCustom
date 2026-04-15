@@ -26,11 +26,13 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
     [SerializeField] int inputChannelCount = 1;
 
     float[] _preAllocBuffer;
+    float[] _extractedBuffer;
     int _errorFlag;
     int _cachedSampleRate;
     bool _channelClampWarning;
     AsioOut _asioOut;
     bool _lipSyncNullWarning;
+    readonly object _lockObject = new object();
 
     public bool isRecording { get; private set; }
     public string selectedDeviceName { get; private set; }
@@ -39,6 +41,7 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
     void Awake()
     {
         _preAllocBuffer = new float[PreAllocFrames * PreAllocChannels];
+        _extractedBuffer = new float[PreAllocFrames * PreAllocChannels];
     }
 
     public string[] GetAsioDriverNames()
@@ -106,7 +109,9 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
     {
         try
         {
-            int totalSamples = e.SamplesPerBuffer * e.InputBuffers.Length;
+            int totalChannels = e.InputBuffers.Length;
+            int samplesPerBuffer = e.SamplesPerBuffer;
+            int totalSamples = samplesPerBuffer * totalChannels;
             if (totalSamples > _preAllocBuffer.Length)
             {
                 Interlocked.Exchange(ref _errorFlag, ErrorCode.BufferOverflow);
@@ -115,11 +120,24 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
 
             e.GetAsInterleavedSamples(_preAllocBuffer);
 
-            lastCallbackSampleCount = totalSamples;
+            int extractedLength = samplesPerBuffer * inputChannelCount;
+            for (int i = 0; i < samplesPerBuffer; i++)
+            {
+                for (int ch = 0; ch < inputChannelCount; ch++)
+                {
+                    _extractedBuffer[i * inputChannelCount + ch] =
+                        _preAllocBuffer[i * totalChannels + inputChannelOffset + ch];
+                }
+            }
+
+            lastCallbackSampleCount = extractedLength;
 
             if (lipSync != null)
             {
-                lipSync.OnDataReceived(_preAllocBuffer, inputChannelCount, _cachedSampleRate);
+                lock (_lockObject)
+                {
+                    lipSync.OnDataReceived(_extractedBuffer, inputChannelCount, _cachedSampleRate);
+                }
             }
             else
             {
