@@ -1,6 +1,7 @@
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
 
 using UnityEngine;
+using NAudio.Wave;
 
 namespace uLipSync
 {
@@ -9,10 +10,23 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
 {
     [SerializeField] uLipSync lipSync;
     [SerializeField] bool isAutoStart = true;
+    [SerializeField] int selectedDeviceIndex = 0;
     [SerializeField] int inputChannelOffset = 0;
     [SerializeField] int inputChannelCount = 1;
 
     public bool isRecording { get; private set; }
+
+    public string[] GetAsioDriverNames()
+    {
+        try
+        {
+            return AsioOut.GetDriverNames();
+        }
+        catch (System.Exception)
+        {
+            return new string[0];
+        }
+    }
 
     public void StartRecord()
     {
