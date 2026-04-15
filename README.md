@@ -566,6 +566,27 @@ Transition from v2 to v3
 From v3.0.0, the values of MFCC have been corrected to more accurate values. As a result, if you are transitioning from v2 to v3, you will need to recalibrate and create a new `Profile`.
 
 
+ASIO Input (Fork Feature)
+-------------------------
+
+This fork adds **ASIO audio input** support via NAudio 2.x for low-latency audio capture on Windows.
+
+### Platform Constraints
+
+| Item | Requirement |
+| ---- | ----------- |
+| Unity Version | Unity 6000.3.10f1 |
+| Scripting Backend | **Mono only** |
+| Platform | Windows x86_64 Standalone |
+
+> **IL2CPP is NOT supported.** NAudio relies on runtime reflection and P/Invoke patterns that are incompatible with IL2CPP's AOT compilation. You must select the Mono scripting backend in *Project Settings > Player > Other Settings > Configuration > Scripting Backend*.
+
+### NAudio License
+
+This fork bundles [NAudio 2.x](https://github.com/naudio/NAudio) (MIT License).
+The full license text is located at `Assets/uLipSync/Plugins/NAudio-LICENSE.txt`.
+
+
 3rd-Party License
 ------------------
 
@@ -574,3 +595,7 @@ From v3.0.0, the values of MFCC have been corrected to more accurate values. As 
 Examples include Unity-chan assets.
 
 © Unity Technologies Japan/UCL
+
+### NAudio
+
+NAudio is licensed under the MIT License. See `Assets/uLipSync/Plugins/NAudio-LICENSE.txt` for details.
