@@ -27,6 +27,7 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
 
     float[] _preAllocBuffer;
     float[] _extractedBuffer;
+    float[] _validPortion;
     int _errorFlag;
     int _cachedSampleRate;
     bool _channelClampWarning;
@@ -131,11 +132,17 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
 
             lastCallbackSampleCount = extractedLength;
 
+            if (_validPortion == null || _validPortion.Length != extractedLength)
+            {
+                _validPortion = new float[extractedLength];
+            }
+            System.Array.Copy(_extractedBuffer, _validPortion, extractedLength);
+
             if (lipSync != null)
             {
                 lock (lipSync._lockObject)
                 {
-                    lipSync.OnDataReceived(_extractedBuffer, inputChannelCount, _cachedSampleRate);
+                    lipSync.OnDataReceived(_validPortion, inputChannelCount, _cachedSampleRate);
                 }
             }
             else
