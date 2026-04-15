@@ -1,4 +1,4 @@
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
 
 using UnityEngine;
 using NAudio.Wave;
