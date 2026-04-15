@@ -126,6 +126,7 @@
 2. The uLipSync shall `OnAudioFilterRead` 内の `OnDataReceived` 呼び出しを新シグネチャに書き換え、`sampleRate` 引数に `AudioSettings.outputSampleRate` を渡す。
 3. The uLipSyncBakedDataPlayer shall `OnDataReceived` の呼び出しを新シグネチャに書き換える。
 4. The uLipSyncCalibrationAudioPlayer shall `OnDataReceived` の呼び出しを新シグネチャに書き換える。
+   > **実装注記（バリデーション後追記）:** `uLipSyncCalibrationAudioPlayer` には `OnDataReceived` を直接呼び出す箇所が存在しないため、本要件は空振り（vacuously satisfied）として満足される。同クラスは `OnAudioRead` イベント → `AudioClip` → Unity 内部の `OnAudioFilterRead` という経路でデータを供給しており、その `OnAudioFilterRead` 実装は要件 7.2 で対応済みの新シグネチャを経由する。よって本要件に対する追加コード変更は不要である。
 5. The uLipSync shall `ScheduleJob()` において `OnDataReceived` から渡された `sampleRate` を使用してサンプルレートを設定し、旧来の `AudioSettings.outputSampleRate` 固定参照を廃止する。
 6. The uLipSyncAsioInput shall 新シグネチャ `OnDataReceived(float[] samples, int channels, int sampleRate)` を用いて ASIO コールバックからサンプルデータを供給する。
 
