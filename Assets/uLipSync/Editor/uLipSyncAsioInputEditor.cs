@@ -13,14 +13,14 @@ public class uLipSyncAsioInputEditor : Editor
 
     void OnEnable()
     {
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
         RefreshDriverList();
 #endif
     }
 
     public override void OnInspectorGUI()
     {
-#if !UNITY_STANDALONE_WIN && !UNITY_EDITOR_WIN
+#if !UNITY_STANDALONE_WIN && !UNITY_EDITOR
         EditorGUILayout.HelpBox(
             "このコンポーネントは Windows Standalone / Mono 環境でのみ動作します。",
             MessageType.Warning);
@@ -87,7 +87,7 @@ public class uLipSyncAsioInputEditor : Editor
 #endif
     }
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
     void RefreshDriverList()
     {
         _driverNames = asio.GetAsioDriverNames();
