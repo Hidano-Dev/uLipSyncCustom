@@ -1,0 +1,22 @@
+{
+    "name": "uLipSync.Runtime.Windows",
+    "rootNamespace": "",
+    "references": [
+        "uLipSync.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor",
+        "WindowsStandalone64"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "NAudio.Core.dll",
+        "NAudio.Asio.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
