@@ -85,3 +85,4 @@ crashlytics-build.properties
 .idea/*
 *.csv
 /[Tt]est[Rr]esults/
+/[Tt]est[Rr]esults.xml
