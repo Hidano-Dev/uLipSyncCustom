@@ -288,19 +288,21 @@ public class uLipSync : MonoBehaviour
         _isDataReceived = false;
 
         int index = 0;
+        int sampleRate = 0;
         lock (_lockObject)
         {
             _inputData.CopyFrom(_rawInputData);
             _means.CopyFrom(profile.means);
             _standardDeviations.CopyFrom(profile.standardDeviation);
             index = _index;
+            sampleRate = _cachedSampleRate;
         }
 
         var lipSyncJob = new LipSyncJob()
         {
             input = _inputData,
             startIndex = index,
-            outputSampleRate = _cachedSampleRate > 0 ? _cachedSampleRate : AudioSettings.outputSampleRate,
+            outputSampleRate = sampleRate > 0 ? sampleRate : AudioSettings.outputSampleRate,
             targetSampleRate = profile.targetSampleRate,
             melFilterBankChannels = profile.melFilterBankChannels,
             means = _means,
