@@ -18,7 +18,7 @@ public class uLipSync : MonoBehaviour
     uLipSyncAudioSource _currentAudioSourceProxy;
 
     JobHandle _jobHandle;
-    object _lockObject = new object();
+    internal object _lockObject = new object();
     bool _allocated = false;
     int _index = 0;
     bool _isDataReceived = false;

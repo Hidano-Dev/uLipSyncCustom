@@ -32,7 +32,6 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
     bool _channelClampWarning;
     AsioOut _asioOut;
     bool _lipSyncNullWarning;
-    readonly object _lockObject = new object();
 
     public bool isRecording { get; private set; }
     public string selectedDeviceName { get; private set; }
@@ -134,7 +133,7 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
 
             if (lipSync != null)
             {
-                lock (_lockObject)
+                lock (lipSync._lockObject)
                 {
                     lipSync.OnDataReceived(_extractedBuffer, inputChannelCount, _cachedSampleRate);
                 }
