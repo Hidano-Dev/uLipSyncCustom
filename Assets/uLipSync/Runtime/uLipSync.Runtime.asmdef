@@ -9,11 +9,8 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": true,
-    "overrideReferences": true,
-    "precompiledReferences": [
-        "NAudio.Core.dll",
-        "NAudio.Asio.dll"
-    ],
+    "overrideReferences": false,
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

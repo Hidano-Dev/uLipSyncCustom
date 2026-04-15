@@ -1,23 +1,22 @@
 {
-    "name": "uLipSync.Tests.Editor",
+    "name": "uLipSync.Runtime.Windows",
     "rootNamespace": "",
     "references": [
-        "uLipSync.Runtime",
-        "uLipSync.Runtime.Windows"
+        "uLipSync.Runtime"
     ],
     "includePlatforms": [
-        "Editor"
+        "Editor",
+        "WindowsStandalone64"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "NAudio.Core.dll",
+        "NAudio.Asio.dll"
     ],
-    "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }
