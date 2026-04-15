@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.0423573">
+  <test-suite type="TestSuite" id="1000" name="uLipSync" fullname="uLipSync" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.042357" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1019" name="uLipSync.Tests.Editor.dll" fullname="D:/Personal/Repositries/uLipSyncCustom/Library/ScriptAssemblies/uLipSync.Tests.Editor.dll" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.036891" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="75228" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1020" name="uLipSync" fullname="uLipSync" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.036422" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1021" name="Tests" fullname="uLipSync.Tests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.036106" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="OnDataReceivedTest" fullname="uLipSync.Tests.OnDataReceivedTest" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.027442" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1008" name="MockAudioInputSource_CanControlRecordingState" fullname="uLipSync.Tests.OnDataReceivedTest.MockAudioInputSource_CanControlRecordingState" methodname="MockAudioInputSource_CanControlRecordingState" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="1864222078" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.011927" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="OnDataReceived_AcceptsDataFromMockSource" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_AcceptsDataFromMockSource" methodname="OnDataReceived_AcceptsDataFromMockSource" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="667076527" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.003462" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="OnDataReceived_ExtractsFirstChannelFromMultiChannel" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_ExtractsFirstChannelFromMultiChannel" methodname="OnDataReceived_ExtractsFirstChannelFromMultiChannel" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="1844194256" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000409" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="OnDataReceived_LockContractPreventsDataCorruption" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_LockContractPreventsDataCorruption" methodname="OnDataReceived_LockContractPreventsDataCorruption" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="551768645" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.001048" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="OnDataReceived_SetsIsDataReceivedFlag" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_SetsIsDataReceivedFlag" methodname="OnDataReceived_SetsIsDataReceivedFlag" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="1143035429" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000266" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="OnDataReceived_StoresDifferentSampleRate" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_StoresDifferentSampleRate" methodname="OnDataReceived_StoresDifferentSampleRate" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="478376404" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000263" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1002" name="OnDataReceived_StoresSampleRate" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_StoresSampleRate" methodname="OnDataReceived_StoresSampleRate" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="1383492619" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000287" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="OnDataReceived_WritesToRawInputData" fullname="uLipSync.Tests.OnDataReceivedTest.OnDataReceived_WritesToRawInputData" methodname="OnDataReceived_WritesToRawInputData" classname="uLipSync.Tests.OnDataReceivedTest" runstate="Runnable" seed="1966525583" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000306" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1010" name="PipelineIntegrationTest" fullname="uLipSync.Tests.PipelineIntegrationTest" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.007675" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1016" name="AsioCallback_DoesNotCallUnityApi" fullname="uLipSync.Tests.PipelineIntegrationTest.AsioCallback_DoesNotCallUnityApi" methodname="AsioCallback_DoesNotCallUnityApi" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="1834503053" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.002609" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="AsioCallback_SetsErrorFlagOnException" fullname="uLipSync.Tests.PipelineIntegrationTest.AsioCallback_SetsErrorFlagOnException" methodname="AsioCallback_SetsErrorFlagOnException" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="1146612944" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000515" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1017" name="AsioCallback_UsesLockForThreadSafety" fullname="uLipSync.Tests.PipelineIntegrationTest.AsioCallback_UsesLockForThreadSafety" methodname="AsioCallback_UsesLockForThreadSafety" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="2055207603" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000477" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1015" name="MockSource_DifferentSampleRates_EachCallUpdatesRate" fullname="uLipSync.Tests.PipelineIntegrationTest.MockSource_DifferentSampleRates_EachCallUpdatesRate" methodname="MockSource_DifferentSampleRates_EachCallUpdatesRate" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="859723135" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000339" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="MockSource_SequentialCalls_AccumulateInRingBuffer" fullname="uLipSync.Tests.PipelineIntegrationTest.MockSource_SequentialCalls_AccumulateInRingBuffer" methodname="MockSource_SequentialCalls_AccumulateInRingBuffer" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="1026117634" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000391" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="MockSource_SuppliesDataToPipeline_SampleRatePropagated" fullname="uLipSync.Tests.PipelineIntegrationTest.MockSource_SuppliesDataToPipeline_SampleRatePropagated" methodname="MockSource_SuppliesDataToPipeline_SampleRatePropagated" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="1970709275" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000299" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="MockSource_SuppliesMultiChannelData_FirstChannelExtracted" fullname="uLipSync.Tests.PipelineIntegrationTest.MockSource_SuppliesMultiChannelData_FirstChannelExtracted" methodname="MockSource_SuppliesMultiChannelData_FirstChannelExtracted" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="338218947" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000321" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="MockSource_WhenNotRecording_DataNotSupplied" fullname="uLipSync.Tests.PipelineIntegrationTest.MockSource_WhenNotRecording_DataNotSupplied" methodname="MockSource_WhenNotRecording_DataNotSupplied" classname="uLipSync.Tests.PipelineIntegrationTest" runstate="Runnable" seed="526937345" result="Passed" start-time="2026-04-15 00:33:59Z" end-time="2026-04-15 00:33:59Z" duration="0.000297" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: D:/Personal/Repositries/uLipSyncCustom/TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
