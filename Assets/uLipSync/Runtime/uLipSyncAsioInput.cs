@@ -188,15 +188,17 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
 
         string driverName = drivers[selectedDeviceIndex];
 
+        int desiredSampleRate = AudioSettings.outputSampleRate > 0 ? AudioSettings.outputSampleRate : 44100;
+
         try
         {
             _asioOut = new AsioOut(driverName);
-            _cachedSampleRate = 44100;
 
             ValidateChannelRange(_asioOut.DriverInputChannelCount);
 
             _asioOut.AudioAvailable += OnAsioAudioAvailable;
-            _asioOut.InitRecordAndPlayback(null, inputChannelCount, _cachedSampleRate);
+            _asioOut.InitRecordAndPlayback(null, inputChannelCount, desiredSampleRate);
+            _cachedSampleRate = desiredSampleRate;
             _asioOut.Play();
 
             selectedDeviceName = driverName;
