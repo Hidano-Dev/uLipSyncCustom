@@ -191,7 +191,7 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
         try
         {
             _asioOut = new AsioOut(driverName);
-            _cachedSampleRate = _asioOut.DriverInputChannelCount > 0 ? (int)_asioOut.PlaybackSampleRate : 44100;
+            _cachedSampleRate = 44100;
 
             ValidateChannelRange(_asioOut.DriverInputChannelCount);
 
