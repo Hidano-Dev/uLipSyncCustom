@@ -29,6 +29,8 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
     int _errorFlag;
     int _cachedSampleRate;
     bool _channelClampWarning;
+    AsioOut _asioOut;
+    bool _lipSyncNullWarning;
 
     public bool isRecording { get; private set; }
     public string selectedDeviceName { get; private set; }
@@ -74,6 +76,12 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
             Debug.LogWarning("[uLipSyncAsioInput] inputChannelOffset + inputChannelCount が ASIO デバイスの最大入力チャンネル数を超えていたため、利用可能な範囲にクランプしました。");
             _channelClampWarning = false;
         }
+
+        if (_lipSyncNullWarning)
+        {
+            Debug.LogWarning("[uLipSyncAsioInput] lipSync フィールドが null のため、データ供給をスキップしています。");
+            _lipSyncNullWarning = false;
+        }
     }
 
     void HandleErrorFlag()
@@ -113,6 +121,10 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
             {
                 lipSync.OnDataReceived(_preAllocBuffer, inputChannelCount, _cachedSampleRate);
             }
+            else
+            {
+                _lipSyncNullWarning = true;
+            }
         }
         catch (System.Exception)
         {
@@ -120,12 +132,92 @@ public class uLipSyncAsioInput : MonoBehaviour, IAudioInputSource
         }
     }
 
+    void OnEnable()
+    {
+        if (isAutoStart)
+        {
+            var drivers = GetAsioDriverNames();
+            if (drivers.Length > 0 && selectedDeviceIndex >= 0 && selectedDeviceIndex < drivers.Length)
+            {
+                StartRecord();
+            }
+        }
+    }
+
+    void OnDisable()
+    {
+        if (isRecording) StopRecord();
+    }
+
+    void OnDestroy()
+    {
+        if (isRecording) StopRecord();
+    }
+
     public void StartRecord()
     {
+        var drivers = GetAsioDriverNames();
+        if (drivers.Length == 0 || selectedDeviceIndex < 0 || selectedDeviceIndex >= drivers.Length)
+        {
+            Debug.LogError("[uLipSyncAsioInput] 有効な ASIO ドライバが見つかりません。");
+            return;
+        }
+
+        if (_asioOut != null)
+        {
+            StopRecord();
+        }
+
+        string driverName = drivers[selectedDeviceIndex];
+
+        try
+        {
+            _asioOut = new AsioOut(driverName);
+            _cachedSampleRate = _asioOut.DriverInputChannelCount > 0 ? (int)_asioOut.PlaybackSampleRate : 44100;
+
+            ValidateChannelRange(_asioOut.DriverInputChannelCount);
+
+            _asioOut.AudioAvailable += OnAsioAudioAvailable;
+            _asioOut.InitRecordAndPlayback(null, inputChannelCount, _cachedSampleRate);
+            _asioOut.Play();
+
+            selectedDeviceName = driverName;
+            isRecording = true;
+        }
+        catch (System.InvalidOperationException ex) when (ex.Message != null && ex.Message.Contains("busy"))
+        {
+            Debug.LogError($"[uLipSyncAsioInput] デバイスが使用中です: {driverName}");
+            isRecording = false;
+            DisposeAsioOut();
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[uLipSyncAsioInput] ASIO デバイスの初期化に失敗しました: {ex.Message}");
+            isRecording = false;
+            DisposeAsioOut();
+        }
     }
 
     public void StopRecord()
     {
+        isRecording = false;
+        DisposeAsioOut();
+    }
+
+    void DisposeAsioOut()
+    {
+        if (_asioOut == null) return;
+
+        try
+        {
+            _asioOut.AudioAvailable -= OnAsioAudioAvailable;
+            _asioOut.Stop();
+        }
+        finally
+        {
+            _asioOut.Dispose();
+            _asioOut = null;
+        }
     }
 }
 
