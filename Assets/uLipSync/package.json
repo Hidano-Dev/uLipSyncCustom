@@ -1,6 +1,6 @@
 {
     "name": "com.hidano.ulipsync-asio",
-    "version": "3.1.5-custom.0",
+    "version": "3.1.5-custom.2",
     "displayName": "uLipSync (ASIO Fork)",
     "description": "A MFCC-based LipSync plugin for Unity using Job and Burst Compiler. Forked to add ASIO low-latency audio input on Windows.",
     "author": {
