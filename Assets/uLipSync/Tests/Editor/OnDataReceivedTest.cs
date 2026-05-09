@@ -14,6 +14,7 @@ public class OnDataReceivedTest
     static int GetPrivateField<T>(object obj, string name)
     {
         var field = typeof(uLipSync).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(field, $"Field '{name}' not found via reflection");
         return (T)field.GetValue(obj) is T val ? (int)(object)val : 0;
     }
 
@@ -56,6 +57,7 @@ public class OnDataReceivedTest
         _lipSync.OnDataReceived(samples, channels, expectedSampleRate);
 
         var field = typeof(uLipSync).GetField("_cachedSampleRate", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(field, "Field '_cachedSampleRate' not found via reflection");
         int actualSampleRate = (int)field.GetValue(_lipSync);
         Assert.AreEqual(expectedSampleRate, actualSampleRate);
     }
@@ -70,6 +72,7 @@ public class OnDataReceivedTest
         _lipSync.OnDataReceived(samples, channels, expectedSampleRate);
 
         var field = typeof(uLipSync).GetField("_cachedSampleRate", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(field, "Field '_cachedSampleRate' not found via reflection");
         int actualSampleRate = (int)field.GetValue(_lipSync);
         Assert.AreEqual(expectedSampleRate, actualSampleRate);
     }
@@ -84,6 +87,7 @@ public class OnDataReceivedTest
         _lipSync.OnDataReceived(samples, channels, sampleRate);
 
         var rawField = typeof(uLipSync).GetField("_rawInputData", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(rawField, "Field '_rawInputData' not found via reflection");
         var rawInputData = (NativeArray<float>)rawField.GetValue(_lipSync);
         Assert.IsTrue(rawInputData.IsCreated);
         Assert.AreEqual(0.25f, rawInputData[0], 0.001f);
@@ -101,6 +105,7 @@ public class OnDataReceivedTest
         _lipSync.OnDataReceived(samples, channels, sampleRate);
 
         var rawField = typeof(uLipSync).GetField("_rawInputData", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(rawField, "Field '_rawInputData' not found via reflection");
         var rawInputData = (NativeArray<float>)rawField.GetValue(_lipSync);
         Assert.AreEqual(0.1f, rawInputData[0], 0.001f);
         Assert.AreEqual(0.2f, rawInputData[1], 0.001f);
@@ -117,6 +122,7 @@ public class OnDataReceivedTest
         _lipSync.OnDataReceived(samples, channels, sampleRate);
 
         var field = typeof(uLipSync).GetField("_isDataReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(field, "Field '_isDataReceived' not found via reflection");
         bool isDataReceived = (bool)field.GetValue(_lipSync);
         Assert.IsTrue(isDataReceived);
     }
@@ -130,6 +136,8 @@ public class OnDataReceivedTest
 
         var rawField = typeof(uLipSync).GetField("_rawInputData", BindingFlags.NonPublic | BindingFlags.Instance);
         var lockField = typeof(uLipSync).GetField("_lockObject", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(rawField, "Field '_rawInputData' not found via reflection");
+        Assert.IsNotNull(lockField, "Field '_lockObject' not found via reflection");
         var lockObj = lockField.GetValue(_lipSync);
 
         var thread = new System.Threading.Thread(() =>
@@ -194,14 +202,56 @@ public class OnDataReceivedTest
         }
 
         var sampleRateField = typeof(uLipSync).GetField("_cachedSampleRate", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(sampleRateField, "Field '_cachedSampleRate' not found via reflection");
         Assert.AreEqual(sampleRate, (int)sampleRateField.GetValue(_lipSync));
 
         var rawField = typeof(uLipSync).GetField("_rawInputData", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(rawField, "Field '_rawInputData' not found via reflection");
         var rawInputData = (NativeArray<float>)rawField.GetValue(_lipSync);
         Assert.AreEqual(0.3f, rawInputData[0], 0.001f);
         Assert.AreEqual(0.6f, rawInputData[1], 0.001f);
 
         mock.StopRecord();
+    }
+
+    [Test]
+    public void OnEnable_CachesOutputSampleRate()
+    {
+        var field = typeof(uLipSync).GetField("_cachedOutputSampleRate", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(field, "Field '_cachedOutputSampleRate' not found via reflection");
+        int cached = (int)field.GetValue(_lipSync);
+        Assert.AreEqual(AudioSettings.outputSampleRate, cached);
+    }
+
+    [Test]
+    public void OnAudioFilterRead_DoesNotReadAudioSettingsFromNonMainThread()
+    {
+        var method = typeof(uLipSync).GetMethod("OnAudioFilterRead", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(method, "OnAudioFilterRead method not found via reflection");
+
+        System.Exception caught = null;
+        var thread = new System.Threading.Thread(() =>
+        {
+            try
+            {
+                float[] samples = new float[] { 0.1f, 0.2f };
+                method.Invoke(_lipSync, new object[] { samples, 1 });
+            }
+            catch (System.Reflection.TargetInvocationException tie)
+            {
+                caught = tie.InnerException;
+            }
+            catch (System.Exception ex)
+            {
+                caught = ex;
+            }
+        });
+        thread.IsBackground = true;
+        thread.Start();
+        var completed = thread.Join(1000);
+
+        Assert.IsTrue(completed, "OnAudioFilterRead did not complete within the timeout.");
+        Assert.IsNull(caught, $"OnAudioFilterRead threw from non-main thread: {caught}");
     }
 }
 

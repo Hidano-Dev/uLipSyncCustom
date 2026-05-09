@@ -1,15 +1,21 @@
 {
-    "name": "com.hecomi.ulipsync",
-    "version": "3.1.5",
-    "displayName": "uLipSync",
-    "description": "A MFCC-based LipSync plugin for Unity using Job and Burst Compiler",
+    "name": "com.hidano.ulipsync-asio",
+    "version": "3.1.5-custom.2",
+    "displayName": "uLipSync (ASIO Fork)",
+    "description": "A MFCC-based LipSync plugin for Unity using Job and Burst Compiler. Forked to add ASIO low-latency audio input on Windows.",
     "author": {
-        "name": "hecomi",
-        "url": "https://tips.hecomi.com"
+        "name": "Hidano",
+        "url": "https://github.com/Hidano-Dev"
     },
+    "contributors": [
+        {
+            "name": "hecomi",
+            "url": "https://tips.hecomi.com"
+        }
+    ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/hecomi/uLipSync"
+        "url": "https://github.com/Hidano-Dev/uLipSyncCustom"
     },
     "dependencies": {
         "com.unity.burst": "1.4.11",
@@ -17,9 +23,11 @@
     },
     "keywords": [
         "unity",
-        "lipsync"
+        "lipsync",
+        "asio",
+        "vtuber"
     ],
-    "license": "MIT License",
+    "license": "MIT",
     "samples": [
         {
             "displayName": "00. Common",
@@ -70,11 +78,6 @@
             "displayName": "09. Animator",
             "description": "A sample of lip-syncing with AnimatorController.",
             "path": "Samples~/09. Animator"
-        },
-        {
-            "displayName": "10. Runtime Setup",
-            "description": "A sample of setup for dynamically loaded model at runtime.",
-            "path": "Samples~/10. Runtime Setup"
         },
         {
             "displayName": "10. Runtime Setup",

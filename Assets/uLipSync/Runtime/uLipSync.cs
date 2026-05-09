@@ -23,6 +23,7 @@ public class uLipSync : MonoBehaviour
     int _index = 0;
     bool _isDataReceived = false;
     int _cachedSampleRate = 0;
+    [System.NonSerialized] volatile int _cachedOutputSampleRate = 0;
 
     NativeArray<float> _rawInputData;
     NativeArray<float> _inputData;
@@ -87,13 +88,21 @@ public class uLipSync : MonoBehaviour
 
     void OnEnable()
     {
+        _cachedOutputSampleRate = AudioSettings.outputSampleRate;
+        AudioSettings.OnAudioConfigurationChanged += OnAudioConfigurationChanged;
         AllocateBuffers();
     }
 
     void OnDisable()
     {
+        AudioSettings.OnAudioConfigurationChanged -= OnAudioConfigurationChanged;
         _jobHandle.Complete();
         DisposeBuffers();
+    }
+
+    void OnAudioConfigurationChanged(bool deviceWasChanged)
+    {
+        _cachedOutputSampleRate = AudioSettings.outputSampleRate;
     }
 
     void Update()
@@ -396,7 +405,7 @@ public class uLipSync : MonoBehaviour
     {
         if (audioSourceProxy) return;
 
-        OnDataReceived(input, channels, AudioSettings.outputSampleRate);
+        OnDataReceived(input, channels, _cachedOutputSampleRate);
     }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
